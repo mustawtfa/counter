@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const fs = require('fs');
 const fetch = require('node-fetch');
+const path = require('path');
 const port = process.env.PORT || 3000;
 const keep_alive = require('./keep_alive.js');
 
@@ -26,7 +27,7 @@ app.get('/counter', (req, res) => {
 
   const leaderboardUrl = 'https://lcv2-server.danqzq.games/get?publicKey=4dda90b6e733cdccd3d1df587094f5a7f2d995c5b2f4163cbac64a07a1e854f9';
 
-  if (totalSeconds < 24400 && !leaderboardFetched) {
+  if (totalSeconds < 20000 && !leaderboardFetched) {
     fetch(leaderboardUrl)
       .then(response => response.text())
       .then(async data => {
