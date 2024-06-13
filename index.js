@@ -6,7 +6,7 @@ const path = require('path');
 const port = process.env.PORT || 3000;
 const keep_alive = require('./keep_alive.js');
 
-const targetTime = new Date('2024-06-14T00:00:00+03:00');
+const targetTime = new Date('2024-06-17T00:00:00+03:00');
 const intervalMilliseconds = 7 * 24 * 60 * 60 * 1000;
 let resetCount = 0;
 let leaderboardFetched = false;
