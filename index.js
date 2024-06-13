@@ -31,9 +31,26 @@ app.get('/counter', (req, res) => {
     fetch(leaderboardUrl)
       .then(response => response.text())
       .then(async data => {
+        // Verileri JSON'a dönüştürme
+        const leaderboardData = JSON.parse(data);
+
+        // İlk 100 kişiyi alma ve düzenleme
+        const top100 = leaderboardData
+          .slice(0, 100)
+          .map(entry => ({
+            Username: entry.Username,
+            Score: entry.Score,
+            Rank: entry.Rank
+          }));
+
+        // Düzenlenmiş verileri metin olarak formatlama
+        const formattedData = top100
+          .map(entry => `${entry.Username} | ${entry.Score} | ${entry.Rank}.`)
+          .join('\n');
+
         const filename = `/sezon${resetCount - 1}.txt`;
-        const filePath = path.join(__dirname, filename); 
-        await fs.promises.writeFile(filePath, data);
+        const filePath = path.join(__dirname, filename);
+        await fs.promises.writeFile(filePath, formattedData);
         console.log(`Leaderboard verileri güncellendi ve "${filePath}" dosyasına yazıldı.`);
         leaderboardFetched = true;
       })
