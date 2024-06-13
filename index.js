@@ -1,11 +1,12 @@
 const express = require('express');
 const app = express();
 const fs = require('fs');
+const fetch = require('node-fetch');
 const port = process.env.PORT || 3000;
 const keep_alive = require('./keep_alive.js');
 
-const targetTime = new Date('2024-06-14T00:00:00+03:00');
-const intervalMilliseconds = 7 * 24 * 60 * 60 * 1000;
+const targetTime = new Date('2024-06-14T00:00:00+03:00'); 
+const intervalMilliseconds = 7 * 24 * 60 * 60 * 1000; 
 let resetCount = 0;
 let leaderboardFetched = false;
 
@@ -23,14 +24,11 @@ app.get('/counter', (req, res) => {
     leaderboardFetched = false;
   }
 
-  if (totalSeconds < 27500 && !leaderboardFetched) {
-    fetch('/wlydan/getLeaderboardFormatted')
-      .then(response => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-      })
+  const leaderboardUrl = 'https://lcv2-server.danqzq.games/get?publicKey=4dda90b6e733cdccd3d1df587094f5a7f2d995c5b2f4163cbac64a07a1e854f9';
+
+  if (totalSeconds < 24400 && !leaderboardFetched) {
+    fetch(leaderboardUrl)
+      .then(response => response.text())
       .then(data => {
         const filename = `/sezon${resetCount - 1}.txt`;
         fs.writeFile(__dirname + filename, data, (err) => {
