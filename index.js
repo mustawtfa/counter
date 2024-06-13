@@ -26,7 +26,7 @@ app.get('/counter', (req, res) => {
 
   const leaderboardUrl = 'https://lcv2-server.danqzq.games/get?publicKey=4dda90b6e733cdccd3d1df587094f5a7f2d995c5b2f4163cbac64a07a1e854f9';
 
-  if (totalSeconds < 24400 && !leaderboardFetched) {
+  if (totalSeconds < 22000 && !leaderboardFetched) {
     fetch(leaderboardUrl)
       .then(response => response.text())
       .then(data => {
