@@ -26,19 +26,14 @@ app.get('/counter', (req, res) => {
 
   const leaderboardUrl = 'https://lcv2-server.danqzq.games/get?publicKey=4dda90b6e733cdccd3d1df587094f5a7f2d995c5b2f4163cbac64a07a1e854f9';
 
-  if (totalSeconds < 22000 && !leaderboardFetched) {
+  if (totalSeconds < 24400 && !leaderboardFetched) {
     fetch(leaderboardUrl)
       .then(response => response.text())
-      .then(data => {
+      .then(async data => {
         const filename = `/sezon${resetCount - 1}.txt`;
-        fs.writeFile(__dirname + filename, data, (err) => {
-          if (err) {
-            console.error('Dosya yazma hatası:', err);
-          } else {
-            console.log(`Leaderboard verileri güncellendi (sezon ${resetCount + 1})`);
-            leaderboardFetched = true;
-          }
-        });
+        await fs.promises.writeFile(path.join(__dirname, filename), data);
+        console.log(`Leaderboard verileri güncellendi (sezon ${resetCount + 1})`);
+        leaderboardFetched = true;
       })
       .catch(error => {
         console.error('Leaderboard verileri alınamadı:', error);
@@ -54,7 +49,10 @@ app.use(express.static(__dirname));
 app.get('/sezon:numara', (req, res) => {
   const sezonNumarasi = req.params.numara;
   const filename = `/sezon${sezonNumarasi}.txt`;
-
+  if (!leaderboardFetched) {
+    res.status(503).send('Leaderboard verileri henüz hazır değil.');
+    return;
+  }
   fs.readFile(__dirname + filename, 'utf8', (err, data) => {
     if (err) {
       console.error('Dosya okuma hatası:', err);
