@@ -35,6 +35,6 @@ public class LeaderboardController : ControllerBase
             formattedData = "SIKINTI VAR:" + error;
         });
 
-        return Ok(formattedData);
+        return Ok(formattedData); //M<3
     }
 }
