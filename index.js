@@ -6,8 +6,8 @@ const path = require('path');
 const port = process.env.PORT || 3000;
 const keep_alive = require('./keep_alive.js');
 
-const targetTime = new Date('2024-06-14T00:00:00+03:00'); 
-const intervalMilliseconds = 7 * 24 * 60 * 60 * 1000; 
+const targetTime = new Date('2024-06-14T00:00:00+03:00');
+const intervalMilliseconds = 7 * 24 * 60 * 60 * 1000;
 let resetCount = 0;
 let leaderboardFetched = false;
 
@@ -32,8 +32,9 @@ app.get('/counter', (req, res) => {
       .then(response => response.text())
       .then(async data => {
         const filename = `/sezon${resetCount - 1}.txt`;
-        await fs.promises.writeFile(path.join(__dirname, filename), data);
-        console.log(`Leaderboard verileri güncellendi (sezon ${resetCount + 1})`);
+        const filePath = path.join(__dirname, filename); 
+        await fs.promises.writeFile(filePath, data);
+        console.log(`Leaderboard verileri güncellendi ve "${filePath}" dosyasına yazıldı.`);
         leaderboardFetched = true;
       })
       .catch(error => {
@@ -50,10 +51,12 @@ app.use(express.static(__dirname));
 app.get('/sezon:numara', (req, res) => {
   const sezonNumarasi = req.params.numara;
   const filename = `/sezon${sezonNumarasi}.txt`;
+
   if (!leaderboardFetched) {
     res.status(503).send('Leaderboard verileri henüz hazır değil.');
     return;
   }
+
   fs.readFile(__dirname + filename, 'utf8', (err, data) => {
     if (err) {
       console.error('Dosya okuma hatası:', err);
