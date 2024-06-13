@@ -23,7 +23,7 @@ app.get('/counter', (req, res) => {
     leaderboardFetched = false;
   }
 
-  if (totalSeconds < 10 && !leaderboardFetched) {
+  if (totalSeconds < 27500 && !leaderboardFetched) {
     fetch('/wlydan/getLeaderboardFormatted')
       .then(response => {
         if (!response.ok) {
