@@ -59,6 +59,21 @@ app.get('/counter', (req, res) => {
       });
   }
 
+  if (totalSeconds < 300 && totalSeconds > 0) {
+    const { exec } = require('child_process');
+    const batchFilePath = path.join(__dirname, 'clear-leaderboard.bat');
+
+    exec(batchFilePath, (error, stdout, stderr) => {
+      if (error) {
+        console.error(`Batch dosyası çalıştırma hatası: ${error}`);
+        return;
+      }
+      console.log(`Batch dosyası çıktısı: ${stdout}`);
+    });
+
+    leaderboardFetched = true;
+  }
+
   res.json({ seconds: Math.floor(totalSeconds), resets: resetCount });
 });
 
