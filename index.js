@@ -62,7 +62,7 @@ function checkAndFetchLeaderboard() {
     fetchLeaderboard();
   }
 
-  if (totalSeconds > 0 && !leaderboardResetted && leaderboardFetched) {
+  if (totalSeconds > 100000000000 && !leaderboardResetted && leaderboardFetched) {
     resetLeaderboard();
   }
 }
@@ -113,7 +113,6 @@ function resetLeaderboard() {
       return;
     }
     console.log(`Dosya çıktısı: ${stdout}`);
-    leaderboardResetted = true;
 
     setInterval(checkLeaderboardData, 10000);
   });
