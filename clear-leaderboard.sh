@@ -51,10 +51,16 @@ if [ $? -ne 0 ]; then
   exit
 fi
 # JSON'u ayr1_t1r
-Users=$(echo "$Users" | tr -d '[]{}:"' | tr ',' '\n')
+if command -v jq &> /dev/null; then
+    Users=$(echo "$Users" | jq -r '.[].Username')
+else
+    echo "jq bulunamadý. Lütfen jq'yu kurun (sudo apt-get install jq)."
+    exit
+fi
+
 if [ -z "$Users" ]; then
-  echo "Done!"
-  exit
+    echo "Bitti!"
+    exit
 fi
 for Name in $Users; do
   echo "Deleting $Name"
