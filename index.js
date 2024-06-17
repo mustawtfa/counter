@@ -10,6 +10,7 @@ const targetTime = new Date('2024-06-17T00:00:00+03:00');
 const intervalMilliseconds = 7 * 24 * 60 * 60 * 1000; // 7 gün
 let resetCount = 1;
 let leaderboardFetched = false;
+let leaderboardResetted = false;
 
 const leaderboardUrl = 'https://lcv2-server.danqzq.games/get?publicKey=4dda90b6e733cdccd3d1df587094f5a7f2d995c5b2f4163cbac64a07a1e854f9';
 
@@ -57,7 +58,7 @@ function checkAndFetchLeaderboard() {
     leaderboardFetched = false;
   }
 
-  if (totalSeconds > 604800 && !leaderboardFetched) {
+  if (totalSeconds < 604800 && !leaderboardFetched) {
     fetchLeaderboard();
   }
 
@@ -104,7 +105,7 @@ function fetchLeaderboard() {
 }
 
 function resetLeaderboard() {
-  const batchFilePath = path.join(__dirname, 'wine clear-leaderboard.bat');
+  const batchFilePath = path.join(__dirname, 'clear-leaderboard.sh');
 
   exec(batchFilePath, (error, stdout, stderr) => {
     if (error) {
@@ -112,5 +113,26 @@ function resetLeaderboard() {
       return;
     }
     console.log(`Batch dosyası çıktısı: ${stdout}`);
+    leaderboardResetted = true;
+
+    setInterval(checkLeaderboardData, 10000);
   });
+}
+
+function checkLeaderboardData() {
+  fetch(leaderboardUrl)
+    .then(response => response.text())
+    .then(data => {
+      if (data.trim() === '') {
+        leaderboardResetted = true;
+        console.log("Veri yok, leaderboardResetted true yapıldı.");
+      } else {
+        clearInterval(checkLeaderboardData);
+        leaderboardResetted = false;
+        console.log("Veri bulundu, leaderboardResetted false yapıldı.");
+      }
+    })
+    .catch(error => {
+      console.error('Leaderboard verileri kontrol edilirken hata oluştu:', error);
+    });
 }
