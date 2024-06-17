@@ -61,7 +61,7 @@ function checkAndFetchLeaderboard() {
     fetchLeaderboard();
   }
 
-  if (totalSeconds < 300 && totalSeconds > 0) {
+  if (totalSeconds < 604800 && totalSeconds > 0) {
     resetLeaderboard();
   }
 }
