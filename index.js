@@ -57,11 +57,11 @@ function checkAndFetchLeaderboard() {
     leaderboardFetched = false;
   }
 
-  if (totalSeconds < 604800 && !leaderboardFetched) {
+  if (totalSeconds > 604800 && !leaderboardFetched) {
     fetchLeaderboard();
   }
 
-  if (totalSeconds < 300 && totalSeconds > 0) {
+  if (totalSeconds < 604800 && totalSeconds > 0) {
     resetLeaderboard();
   }
 }
