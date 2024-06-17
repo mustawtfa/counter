@@ -4,6 +4,7 @@ const fs = require('fs');
 const fetch = require('node-fetch');
 const path = require('path');
 const port = process.env.PORT || 3000;
+const { exec } = require('child_process'); // exec fonksiyonunu burada tanımlayalım
 
 const targetTime = new Date('2024-06-17T00:00:00+03:00');
 const intervalMilliseconds = 7 * 24 * 60 * 60 * 1000; // 7 gün
@@ -46,7 +47,6 @@ app.get('/sezon:numara', (req, res) => {
   });
 });
 
-// Sürekli çalışan fonksiyon
 function checkAndFetchLeaderboard() {
   const now = new Date();
   const elapsedMilliseconds = now - targetTime;
@@ -57,52 +57,60 @@ function checkAndFetchLeaderboard() {
     leaderboardFetched = false;
   }
 
-  if (totalSeconds > 604800 && !leaderboardFetched) { 
-    fetch(leaderboardUrl)
-      .then(response => response.text())
-      .then(async data => {
-        try {
-          const leaderboardData = JSON.parse(data);
-          const top100 = leaderboardData.slice(0, 100).map(entry => ({
-            Username: entry.Username,
-            Score: entry.Score,
-            Rank: entry.Rank
-          }));
-          const formattedData = top100.map(entry => `${entry.Username} | ${entry.Score} | ${entry.Rank}.`).join('\n');
-          const filename = `/sezon${resetCount - 1}.txt`;
-          const filePath = path.join(__dirname, filename);
-          await fs.promises.writeFile(filePath, formattedData);
-          console.log(`Leaderboard verileri güncellendi ve "${filePath}" dosyasına yazıldı.`);
-          leaderboardFetched = true;
-        } catch (error) {
-          console.error('Leaderboard verileri işlenirken hata oluştu:', error);
-        }
-      })
-      .catch(error => {
-        console.error('Leaderboard verileri alınamadı:', error);
-      });
+  if (totalSeconds > 604800 && !leaderboardFetched) {
+    fetchLeaderboard();
   }
 
   if (totalSeconds < 300 && totalSeconds > 0) {
-    const { exec } = require('child_process');
-    const batchFilePath = path.join(__dirname, 'clear-leaderboard.bat');
-
-    exec(batchFilePath, (error, stdout, stderr) => {
-      if (error) {
-        console.error(`Batch dosyası çalıştırma hatası: ${error}`);
-        return;
-      }
-      console.log(`Batch dosyası çıktısı: ${stdout}`);
-    });
-
-    leaderboardFetched = true;
+    resetLeaderboard();
   }
+}
 
-  res.json({ seconds: Math.floor(totalSeconds), resets: resetCount });
-};
-
-setInterval(checkAndFetchLeaderboard, 1000);
+setInterval(checkAndFetchLeaderboard, 1000); 
 
 app.listen(port, () => {
   console.log(`Sunucu ${port} portunda çalışıyor.`);
 });
+
+function fetchLeaderboard() {
+  fetch(leaderboardUrl)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP hata! Durum: ${response.status}`);
+      }
+      return response.text();
+    })
+    .then(async data => {
+      try {
+        const leaderboardData = JSON.parse(data);
+        const top100 = leaderboardData.slice(0, 100).map(entry => ({
+          Username: entry.Username,
+          Score: entry.Score,
+          Rank: entry.Rank
+        }));
+        const formattedData = top100.map(entry => `${entry.Username} | ${entry.Score} | ${entry.Rank}.`).join('\n');
+        const filename = `/sezon${resetCount - 1}.txt`;
+        const filePath = path.join(__dirname, filename);
+        await fs.promises.writeFile(filePath, formattedData);
+        console.log(`Leaderboard verileri güncellendi ve "${filePath}" dosyasına yazıldı.`);
+        leaderboardFetched = true;
+      } catch (error) {
+        console.error('Leaderboard verileri işlenirken hata oluştu:', error);
+      }
+    })
+    .catch(error => {
+      console.error('Leaderboard verileri alınamadı:', error);
+    });
+}
+
+function resetLeaderboard() {
+  const batchFilePath = path.join(__dirname, 'clear-leaderboard.bat');
+
+  exec(batchFilePath, (error, stdout, stderr) => {
+    if (error) {
+      console.error(`Batch dosyası çalıştırma hatası: ${error}`);
+      return;
+    }
+    console.log(`Batch dosyası çıktısı: ${stdout}`);
+  });
+}
