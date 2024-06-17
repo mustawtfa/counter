@@ -61,7 +61,7 @@ function checkAndFetchLeaderboard() {
     fetchLeaderboard();
   }
 
-  if (totalSeconds < 604800 && totalSeconds > 0) {
+  if (totalSeconds > 0 && !leaderboardResetted) {
     resetLeaderboard();
   }
 }
@@ -104,7 +104,7 @@ function fetchLeaderboard() {
 }
 
 function resetLeaderboard() {
-  const batchFilePath = path.join(__dirname, 'clear-leaderboard.bat');
+  const batchFilePath = path.join(__dirname, 'wine clear-leaderboard.bat');
 
   exec(batchFilePath, (error, stdout, stderr) => {
     if (error) {
