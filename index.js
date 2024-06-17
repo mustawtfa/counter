@@ -109,10 +109,10 @@ function resetLeaderboard() {
 
   exec(batchFilePath, (error, stdout, stderr) => {
     if (error) {
-      console.error(`Batch dosyası çalıştırma hatası: ${error}`);
+      console.error(`Dosya çalıştırma hatası: ${error}`);
       return;
     }
-    console.log(`Batch dosyası çıktısı: ${stdout}`);
+    console.log(`Dosya çıktısı: ${stdout}`);
     leaderboardResetted = true;
 
     setInterval(checkLeaderboardData, 10000);
