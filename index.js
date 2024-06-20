@@ -6,8 +6,9 @@ const path = require('path');
 const port = process.env.PORT || 3000;
 const { exec } = require('child_process');
 
-const targetTime = new Date('2024-06-17T00:00:00+03:00');
-const intervalMilliseconds = 7 * 24 * 60 * 60 * 1000;
+const targetTime = new Date('2024-06-17T00:00:00+03:00'); 
+const intervalMilliseconds = 14 * 24 * 60 * 60 * 1000; 
+
 let resetCount = 1;
 let leaderboardFetched = false;
 let leaderboardResetted = false;
@@ -58,7 +59,7 @@ function checkAndFetchLeaderboard() {
     leaderboardFetched = false;
   }
 
-  if (totalSeconds > 604800 && !leaderboardFetched) {
+  if (totalSeconds > 1209600 && !leaderboardFetched) {
     fetchLeaderboard();
   }
 
