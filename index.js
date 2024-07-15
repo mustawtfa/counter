@@ -9,7 +9,7 @@ const { exec } = require('child_process');
 const targetTime = new Date('2024-06-17T00:00:00+03:00'); 
 const intervalMilliseconds = 14 * 24 * 60 * 60 * 1000; 
 
-let resetCount = 1;
+let resetCount = 3;
 let leaderboardFetched = false;
 let leaderboardResetted = false;
 
