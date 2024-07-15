@@ -59,7 +59,7 @@ function checkAndFetchLeaderboard() {
     leaderboardFetched = false;
   }
 
-  if (totalSeconds > 1209600 && !leaderboardFetched) {
+  if (totalSeconds > 1209500 && !leaderboardFetched) {
     fetchLeaderboard();
   }
 
