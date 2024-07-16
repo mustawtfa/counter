@@ -6,10 +6,10 @@ const path = require('path');
 const port = process.env.PORT || 3000;
 const { exec } = require('child_process');
 
-const targetTime = new Date('2024-06-17T00:00:00+03:00'); 
+const targetTime = new Date('2024-07-16T00:00:00+03:00'); 
 const intervalMilliseconds = 14 * 24 * 60 * 60 * 1000; 
 
-let resetCount = 3;
+let resetCount = 4;
 let leaderboardFetched = false;
 let leaderboardResetted = false;
 
@@ -59,11 +59,11 @@ function checkAndFetchLeaderboard() {
     leaderboardFetched = false;
   }
 
-  if (totalSeconds > 1209500 && !leaderboardFetched) {
+  if (totalSeconds > (14 * 24 * 60 * 60 - 60) && !leaderboardFetched) {
     fetchLeaderboard();
   }
 
-  if (totalSeconds > 100000000000 && !leaderboardResetted && leaderboardFetched) {
+  if (totalSeconds > 10000000 && !leaderboardResetted && leaderboardFetched) {
     resetLeaderboard();
   }
 }
@@ -91,7 +91,7 @@ function fetchLeaderboard() {
           Rank: entry.Rank
         }));
         const formattedData = top100.map(entry => `${entry.Username} | ${entry.Score} | ${entry.Rank}.`).join('\n');
-        const filename = `/sezon${resetCount - 1}.txt`;
+        const filename = `/sezon${resetCount}.txt`;
         const filePath = path.join(__dirname, filename);
         await fs.promises.writeFile(filePath, formattedData);
         console.log(`Leaderboard verileri güncellendi ve "${filePath}" dosyasına yazıldı.`);
