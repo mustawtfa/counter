@@ -7,7 +7,10 @@ const port = process.env.PORT || 3000;
 const { exec } = require('child_process');
 
 const targetTime = new Date('2024-07-16T00:00:00+03:00'); 
+const earlyEnd = new Date('2024-07-22T00:00:00+03:00');
 const intervalMilliseconds = 14 * 24 * 60 * 60 * 1000; 
+const extendedIntervalMilliseconds = 30 * 24 * 60 * 60 * 1000; 
+const earlyIntervalMilliseconds = (earlyEnd - targetTime) - 60 * 1000;
 
 let resetCount = 4;
 let leaderboardFetched = false;
@@ -21,8 +24,19 @@ app.get('/', (req, res) => {
 
 app.get('/counter', (req, res) => {
   const now = new Date();
-  const elapsedMilliseconds = now - targetTime;
-  const totalSeconds = elapsedMilliseconds % intervalMilliseconds / 1000;
+  let elapsedMilliseconds = now - targetTime;
+  let totalSeconds;
+  
+  if (resetCount === 4 && now >= earlyEnd) {
+    elapsedMilliseconds = now - earlyEnd;
+    totalSeconds = (elapsedMilliseconds % extendedIntervalMilliseconds) / 1000;
+  } else if (resetCount === 4) {
+    totalSeconds = (elapsedMilliseconds % earlyIntervalMilliseconds) / 1000;
+  } else if (resetCount === 5) {
+    totalSeconds = (elapsedMilliseconds % extendedIntervalMilliseconds) / 1000;
+  } else {
+    totalSeconds = (elapsedMilliseconds % intervalMilliseconds) / 1000;
+  }
 
   res.json({ seconds: Math.floor(totalSeconds), resets: resetCount });
 });
@@ -51,20 +65,35 @@ app.get('/sezon:numara', (req, res) => {
 
 function checkAndFetchLeaderboard() {
   const now = new Date();
-  const elapsedMilliseconds = now - targetTime;
-  const totalSeconds = elapsedMilliseconds % intervalMilliseconds / 1000;
+  let elapsedMilliseconds = now - targetTime;
+  let totalSeconds;
+  
+  if (resetCount === 4 && now >= earlyEnd) {
+    elapsedMilliseconds = now - earlyEnd;
+    totalSeconds = (elapsedMilliseconds % extendedIntervalMilliseconds) / 1000;
+  } else if (resetCount === 4) {
+    totalSeconds = (elapsedMilliseconds % earlyIntervalMilliseconds) / 1000;
+  } else if (resetCount === 5) {
+    totalSeconds = (elapsedMilliseconds % extendedIntervalMilliseconds) / 1000;
+  } else {
+    totalSeconds = (elapsedMilliseconds % intervalMilliseconds) / 1000;
+  }
 
-  if (totalSeconds < 1 && elapsedMilliseconds >= 1) {
+  if (resetCount === 4 && now >= earlyEnd) {
+    resetCount++;
+    leaderboardFetched = false;
+  } else if (totalSeconds < 1 && elapsedMilliseconds >= 1) {
     resetCount++;
     leaderboardFetched = false;
   }
 
-  if (totalSeconds > (14 * 24 * 60 * 60 - 60) && !leaderboardFetched) {
-    fetchLeaderboard();
-  }
+  const oneMinuteBeforeEnd = 518400 - 60;
 
-  if (totalSeconds > 10000000 && !leaderboardResetted && leaderboardFetched) {
-    resetLeaderboard();
+  if ((resetCount === 4 && totalSeconds >= oneMinuteBeforeEnd && totalSeconds < 518400) || 
+      (resetCount === 5 && totalSeconds >= (30 * 24 * 60 * 60 - 60)) || 
+      (resetCount > 5 && totalSeconds >= (14 * 24 * 60 * 60 - 60)) && 
+      !leaderboardFetched) {
+    fetchLeaderboard();
   }
 }
 
