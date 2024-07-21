@@ -7,7 +7,7 @@ const port = process.env.PORT || 3000;
 const { exec } = require('child_process');
 
 const targetTime = new Date('2024-07-16T00:00:00+03:00'); 
-const earlyEnd = new Date('2024-07-22T00:00:00+03:00');
+const earlyEnd = new Date('2024-07-22T14:00:00+03:00');
 const intervalMilliseconds = 14 * 24 * 60 * 60 * 1000; 
 const extendedIntervalMilliseconds = 30 * 24 * 60 * 60 * 1000; 
 const earlyIntervalMilliseconds = (earlyEnd - targetTime) - 60 * 1000;
@@ -16,7 +16,7 @@ let resetCount = 4;
 let leaderboardFetched = false;
 let leaderboardResetted = false;
 
-const leaderboardUrl = 'https://lcv2-server.danqzq.games/get?publicKey=4dda90b6e733cdccd3d1df587094f5a7f2d995c5b2f4163cbac64a07a1e854f9';
+const leaderboardUrl = 'https://lcv2-server.danqzq.games/get?publicKey=5830625ddabd61108a0b079b05ab593914b104bd796a642200be28187e16022e';
 
 app.get('/', (req, res) => {
   res.send('Sayaç uygulamasına hoş geldiniz!');
