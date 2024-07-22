@@ -7,7 +7,7 @@ const port = process.env.PORT || 3000;
 const { exec } = require('child_process');
 
 const targetTime = new Date('2024-07-16T00:00:00+03:00'); 
-const earlyEnd = new Date('2024-07-22T00:00:00+03:00');
+const earlyEnd = new Date('2024-07-23T02:00:00+03:00');
 const intervalMilliseconds = 14 * 24 * 60 * 60 * 1000; 
 const extendedIntervalMilliseconds = 30 * 24 * 60 * 60 * 1000; 
 const earlyIntervalMilliseconds = (earlyEnd - targetTime) - 60 * 1000;
