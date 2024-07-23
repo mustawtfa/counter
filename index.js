@@ -31,11 +31,15 @@ app.get('/counter', (req, res) => {
     elapsedMilliseconds = now - earlyEnd;
     totalSeconds = (elapsedMilliseconds % extendedIntervalMilliseconds) / 1000;
   } else if (resetCount === 4) {
-    totalSeconds = (elapsedMilliseconds % earlyIntervalMilliseconds) / 1000;
+    totalSeconds = (elapsedMilliseconds % intervalMilliseconds) / 1000;
   } else if (resetCount === 5) {
     totalSeconds = (elapsedMilliseconds % extendedIntervalMilliseconds) / 1000;
   } else {
     totalSeconds = (elapsedMilliseconds % intervalMilliseconds) / 1000;
+  }
+
+  if (totalSeconds >= 600000) {
+    totalSeconds = 0;
   }
 
   res.json({ seconds: Math.floor(totalSeconds), resets: resetCount });
