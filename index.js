@@ -22,7 +22,7 @@ app.get('/', (req, res) => {
 
 app.get('/counter', (req, res) => {
   const now = new Date();
-  let elapsedMilliseconds = now - targetTime;
+  let elapsedMilliseconds = targetTime - now;
   let totalSeconds;
   
   if (resetCount === 5) {
@@ -58,7 +58,7 @@ app.get('/sezon:numara', (req, res) => {
 
 function checkAndFetchLeaderboard() {
   const now = new Date();
-  let elapsedMilliseconds = now - targetTime;
+  let elapsedMilliseconds = targetTime - now;
   let totalSeconds;
   
   if (resetCount === 5) {
