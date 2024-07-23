@@ -38,10 +38,6 @@ app.get('/counter', (req, res) => {
     totalSeconds = (elapsedMilliseconds % intervalMilliseconds) / 1000;
   }
 
-  if (totalSeconds >= 600000) {
-    totalSeconds = 0;
-  }
-
   res.json({ seconds: Math.floor(totalSeconds), resets: resetCount });
 });
 
