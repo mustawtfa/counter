@@ -5,7 +5,7 @@ const fetch = require('node-fetch');
 const path = require('path');
 const port = process.env.PORT || 3000;
 const { exec } = require('child_process');
-
+// M<3
 const targetTime = new Date('2024-08-23T08:42:00+03:00');
 const intervalMilliseconds = 14 * 24 * 60 * 60 * 1000; 
 const extendedIntervalMilliseconds = 30 * 24 * 60 * 60 * 1000; 
