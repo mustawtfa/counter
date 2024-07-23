@@ -6,13 +6,12 @@ const path = require('path');
 const port = process.env.PORT || 3000;
 const { exec } = require('child_process');
 
-const targetTime = new Date('2024-07-16T00:00:00+03:00'); 
-const earlyEnd = new Date('2024-07-23T08:42:00+03:00');
+const targetTime = new Date('2024-08-23T08:42:00+03:00');
 const intervalMilliseconds = 14 * 24 * 60 * 60 * 1000; 
 const extendedIntervalMilliseconds = 30 * 24 * 60 * 60 * 1000; 
 const earlyIntervalMilliseconds = (earlyEnd - targetTime) - 60 * 1000;
 
-let resetCount = 4;
+let resetCount = 5;
 let leaderboardFetched = false;
 let leaderboardResetted = false;
 
@@ -27,12 +26,7 @@ app.get('/counter', (req, res) => {
   let elapsedMilliseconds = now - targetTime;
   let totalSeconds;
   
-  if (resetCount === 4 && now >= earlyEnd) {
-    elapsedMilliseconds = now - earlyEnd;
-    totalSeconds = (elapsedMilliseconds % extendedIntervalMilliseconds) / 1000;
-  } else if (resetCount === 4) {
-    totalSeconds = (elapsedMilliseconds % intervalMilliseconds) / 1000;
-  } else if (resetCount === 5) {
+  if (resetCount === 5) {
     totalSeconds = (elapsedMilliseconds % extendedIntervalMilliseconds) / 1000;
   } else {
     totalSeconds = (elapsedMilliseconds % intervalMilliseconds) / 1000;
