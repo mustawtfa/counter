@@ -9,7 +9,6 @@ const { exec } = require('child_process');
 const targetTime = new Date('2024-08-23T08:42:00+03:00');
 const intervalMilliseconds = 14 * 24 * 60 * 60 * 1000; 
 const extendedIntervalMilliseconds = 30 * 24 * 60 * 60 * 1000; 
-const earlyIntervalMilliseconds = (earlyEnd - targetTime) - 60 * 1000;
 
 let resetCount = 5;
 let leaderboardFetched = false;
@@ -62,26 +61,13 @@ function checkAndFetchLeaderboard() {
   let elapsedMilliseconds = now - targetTime;
   let totalSeconds;
   
-  if (resetCount === 4 && now >= earlyEnd) {
-    elapsedMilliseconds = now - earlyEnd;
-    totalSeconds = (elapsedMilliseconds % extendedIntervalMilliseconds) / 1000;
-  } else if (resetCount === 4) {
-    totalSeconds = (elapsedMilliseconds % earlyIntervalMilliseconds) / 1000;
-  } else if (resetCount === 5) {
+  if (resetCount === 5) {
     totalSeconds = (elapsedMilliseconds % extendedIntervalMilliseconds) / 1000;
   } else {
     totalSeconds = (elapsedMilliseconds % intervalMilliseconds) / 1000;
   }
 
-  if (resetCount === 4 && now >= earlyEnd && !leaderboardResetted) {
-    resetCount++;
-    totalSeconds=0;
-    leaderboardFetched = false;
-    leaderboardResetted = true;
-  }
-
-  if ((resetCount === 4 && now >= new Date(earlyEnd.getTime() - 60 * 1000)) || 
-      (resetCount === 5 && totalSeconds >= (30 * 24 * 60 * 60 - 60)) || 
+  if ((resetCount === 5 && totalSeconds >= (30 * 24 * 60 * 60 - 60)) || 
       (resetCount > 5 && totalSeconds >= (14 * 24 * 60 * 60 - 60)) && 
       !leaderboardFetched) {
     fetchLeaderboard();
