@@ -26,7 +26,7 @@ app.get('/counter', (req, res) => {
   let totalSeconds;
   
   if (resetCount === 5) {
-    totalSeconds = (extendedIntervalMilliseconds % elapsedMilliseconds) / 1000;
+    totalSeconds = (elapsedMilliseconds % extendedIntervalMilliseconds) / 1000;
   } else {
     totalSeconds = (elapsedMilliseconds % intervalMilliseconds) / 1000;
   }
@@ -62,7 +62,7 @@ function checkAndFetchLeaderboard() {
   let totalSeconds;
   
   if (resetCount === 5) {
-    totalSeconds = (extendedIntervalMilliseconds % elapsedMilliseconds) / 1000;
+    totalSeconds = (elapsedMilliseconds % extendedIntervalMilliseconds) / 1000;
   } else {
     totalSeconds = (elapsedMilliseconds % intervalMilliseconds) / 1000;
   }
