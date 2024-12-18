@@ -6,15 +6,15 @@ const path = require('path');
 const port = process.env.PORT || 3000;
 const { exec } = require('child_process');
 // M<3
-const targetTime = new Date('2024-10-21T12:00:00+03:00');
+const targetTime = new Date('2024-12-18T21:00:00+03:00');
 const intervalMilliseconds = 14 * 24 * 60 * 60 * 1000; 
-const extendedIntervalMilliseconds = 60 * 24 * 60 * 60 * 1000; 
+const extendedIntervalMilliseconds = 90 * 24 * 60 * 60 * 1000; 
 
-let resetCount = 6;
+let resetCount = 7;
 let leaderboardFetched = false;
 let leaderboardResetted = false;
 
-const leaderboardUrl = 'https://lcv2-server.danqzq.games/get?publicKey=2783dcf10b8e257284355d32d80275380bc83e3f98d6527dbc3433c01f237700';
+const leaderboardUrl = 'https://lcv2-server.danqzq.games/get?publicKey=3c5cfe48decd94d148e3bb60b005236d5e6e7bd77bce5027d1b46365df505d89';
 
 app.get('/', (req, res) => {
   res.send('Sayaç uygulamasına hoş geldiniz!');
@@ -25,7 +25,7 @@ app.get('/counter', (req, res) => {
   let elapsedMilliseconds = now - targetTime;
   let totalSeconds;
   
-  if (resetCount === 6) {
+  if (resetCount === 7) {
     totalSeconds = (elapsedMilliseconds % extendedIntervalMilliseconds) / 1000;
   } else {
     totalSeconds = (elapsedMilliseconds % intervalMilliseconds) / 1000;
@@ -61,14 +61,14 @@ function checkAndFetchLeaderboard() {
   let elapsedMilliseconds = now - targetTime;
   let totalSeconds;
   
-  if (resetCount === 6) {
+  if (resetCount === 7) {
     totalSeconds = (elapsedMilliseconds % extendedIntervalMilliseconds) / 1000;
   } else {
     totalSeconds = (elapsedMilliseconds % intervalMilliseconds) / 1000;
   }
 
-  if ((resetCount === 6 && totalSeconds >= (60 * 24 * 60 * 60 - 60)) || 
-      (resetCount > 6 && totalSeconds >= (14 * 24 * 60 * 60 - 60)) && 
+  if ((resetCount === 7 && totalSeconds >= (90 * 24 * 60 * 60 - 60)) || 
+      (resetCount > 7 && totalSeconds >= (14 * 24 * 60 * 60 - 60)) && 
       !leaderboardFetched) {
     fetchLeaderboard();
   }
